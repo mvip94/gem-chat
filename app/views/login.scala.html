@@ -1,0 +1,27 @@
+@(loginForm: DynamicForm,usuario: String = "null")
+@main(null,usuario,null,null,null) {
+    <div class="content2">
+        <div class="grids-heading gallery-heading signup-heading">
+            <h2>Iniciar Sesion</h2>
+        </div>
+        <form action="@routes.LoginController.postLogin()" method="post">
+            <div class="form-group @(if(loginForm.error("email") != null) "has-error" else "" )">
+                <input  type="email"
+                name="email"
+                id="form_email"
+                placeholder="Ingrese un email"
+                value="@(if(!loginForm.field("email").equals(null)) loginForm.field("email").value() else "")"
+                required>
+                <span class="help-block">
+                @for(error <- loginForm("email").errors) {
+                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                }
+                </span>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" id="form_password" placeholder="Ingrese contraseña" required>
+            </div>
+            <button class="btn btn-success">Ingresar</button>
+        </form>
+    </div>
+}

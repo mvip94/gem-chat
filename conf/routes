@@ -1,0 +1,31 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                   controllers.HomeController.index()
+GET     /departamento/:departament          controllers.ChatController.chatDepartment(departament)
+GET     /departamento/:departament/t/:reciever controllers.ChatController.chatIndividual(departament,reciever)
+
+GET     /chat/departamento/:department/     controllers.ChatController.socketDepartmentChat(department, username)
+GET     /chat/indivial/:reciever            controllers.ChatController.socketIndividualChat(reciever)
+
+GET     /chat/grupal/crear                  controllers.ChatController.crearChatGrupal()
+POST     /chat/grupal                      controllers.ChatController.crearChatNuevo()
+GET     /chat/grupal/:idChat                    controllers.ChatController.chatGrupal(idChat)
+
+GET     /login                              controllers.LoginController.getLogin
+GET     /logout                             controllers.LoginController.getLogout
+
+GET     /messages/:roomchat/:chatType           controllers.MessageController.getMessages(roomchat,chatType)
+
+GET     /mi-perfil                              controllers.UserController.showPerfil()
+POST    /mi-perfil                              controllers.UserController.editarPerfil()
+
+POST    /login                              controllers.LoginController.postLogin
+
+GET     /reportes                           controllers.ReportController.getReport()
+
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file                       controllers.Assets.at(path="/public", file)

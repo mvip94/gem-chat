@@ -1,0 +1,74 @@
+@import java.text.SimpleDateFormat
+@(tipo:String,listaCon:List[GroupChat],departamento: String,usuario: String,listaUsuarios: List[User],empresa: String,reporte:List[Reporte])
+@scriptshead = {
+    <!-- tables -->
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/table-style.css")">
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/basictable.css")">
+    <script src="@routes.Assets.at("js/jquery.basictable.min.js")" type="text/javascript"></script>
+    <script type="text/javascript">
+            $(document).ready(function() {
+                $('#table').basictable();
+
+                $('#table-breakpoint').basictable({
+                    breakpoint: 768
+                });
+
+                $('#table-swap-axis').basictable({
+                    swapAxis: true
+                });
+
+                $('#table-force-off').basictable({
+                    forceResponsive: false
+                });
+
+                $('#table-no-resize').basictable({
+                    noResize: true
+                });
+
+                $('#table-two-axis').basictable();
+
+                $('#table-max-height').basictable({
+                    tableWrapper: true
+                });
+            });
+    </script>
+}
+
+    @main(tipo,usuario,departamento,listaUsuarios: List[User],listaCon,scriptshead ) {
+    <!-- input-forms -->
+    <div class="grids">
+        <div class="progressbar-heading grids-heading">
+            <div class="">
+                <h1><a href="/"><img src="@routes.Assets.at("images/logo.png")" alt=""/></a></h1>
+            </div>
+            <h2>@empresa</h2>
+        </div>
+
+        <div class="table-heading">
+            <h2>Reporte de actividad diaria de usuarios. @(new SimpleDateFormat("dd/MMM/YY").format(new Date()))</h2>
+        </div>
+        <div class="agile-tables">
+            <div class="w3l-table-info">
+                <table id="table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Departamento</th>
+                            <th>Tiempo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for(t <- reporte){
+                            <tr>
+                                <td>@t.getNombre</td>
+                                <td>@t.getDepartment</td>
+                                <td>@t.getTiempo</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+}

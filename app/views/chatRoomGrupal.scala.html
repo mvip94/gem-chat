@@ -1,0 +1,134 @@
+@(idChat:String,tipo:String,listaCon:List[GroupChat],departamento: String,usuario: String,listaUsuarios: List[User])
+
+@main(tipo,usuario,departamento,listaUsuarios: List[User],listaCon) {
+    <!-- input-forms -->
+    <div class="grids">
+        <div class="progressbar-heading grids-heading">
+            <div class="">
+                <h1><a href="/"><img src="@routes.Assets.at("images/logo.png")" alt=""/></a></h1>
+            </div>
+            <h2>el nombre del grupo</h2>
+        </div>
+        <div class="panel panel-widget forms-panel">
+            <div id="onChat" class="row">
+                <div class="span10" id="main">
+                    <div id="messages">
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <textarea id="talk" placeholder="Ingrese su mensaje....." class="form-control"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+        <script type="text/javascript">
+                var usuario = "@usuario"
+                $(function() {
+
+                    $("#onChat").show()
+
+                    var WS = window['MozWebSocket'] ? MozWebSocket : WebSocket
+                    var chatSocket = new WS("@routes.ChatController.socketDepartmentChat(idChat,usuario).webSocketURL(request)");
+
+                    var sendMessage = function() {
+                        chatSocket.send(JSON.stringify(
+                                {text: $("#talk").val()}
+                        ))
+                        $("#talk").val('')
+                    }
+
+                    var receiveEvent = function(event) {
+                        var data = JSON.parse(event.data)
+
+                        if(usuario == data.user){
+                            // Create the message element
+                            var el = $('<div class="message"><div class="fecha"><div class="right-content"><span></span><p class="content-message-right"></p></div><p id="fecha"></p></div></div>')
+                            $("span", el).text(data.user)
+                            $("p", el).text(data.message)
+                            $("#fecha",el).text(getDate(data.fechaEnvio))
+                            $(el).addClass(data.kind+" left")
+                            $('#messages').append(el)
+                        }else{
+                            // Create the message element
+                            var el = $('<div class="message"><div class="fecha"><div class="left-content"><span></span><p class="content-message-left"></p></div><p id="fecha"></p></div></div>')
+                            $("span", el).text(data.user)
+                            $("p", el).text(data.message)
+                            $("#fecha",el).text(getDate(data.fechaEnvio))
+                            $(el).addClass(data.kind+" right")
+                            $('#messages').append(el)
+                        }
+                        $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 420);
+
+                    }
+
+                    var handleReturnKey = function(e) {
+                        if(e.charCode == 13 || e.keyCode == 13) {
+                            e.preventDefault()
+                            sendMessage()
+                        }
+                    }
+
+                    $("#talk").keypress(handleReturnKey)
+
+                    chatSocket.onmessage = receiveEvent
+
+                })
+                $(document).ready(getMessages());
+                function getMessages() {
+                    $.ajax({
+                        type: "GET",
+                        url: "/messages/@idChat/grupo",
+                        success: function(result){
+                            $.each(result,function(i,item){
+                                if(usuario == item.sender){
+                                    var el = $('<div class="message"><div class="fecha"><div class=" right-content"><span></span><p class="content-message-right"></p></div><p id="fecha"></p></div></div>')
+                                    $("span", el).text(item.sender)
+                                    $("p", el).text(item.message)
+                                    $("#fecha",el).text(getDate(item.fechaEnvio))
+                                    $(el).addClass("talk left")
+                                    $('#messages').append(el)
+                                }else{
+                                    var el = $('<div class="message"><div class="fecha"><div class="left-content"><span></span><p class="content-message-left"></p></div><p id="fecha"></p></div></div>')
+                                    $("span", el).text(item.sender)
+                                    $("p", el).text(item.message)
+                                    $("#fecha",el).text(getDate(item.fechaEnvio))
+                                    $(el).addClass("talk right")
+                                    $('#messages').append(el)
+                                }
+                            });
+                            $('#messages').animate({scrollTop: $('#messages').prop("scrollHeight")}, 420);
+
+                        }
+                    });
+                }
+
+                function getDate(string){
+                    initMoment();
+                    return moment(string, "yyyymmdd h:mm:ss").fromNow();
+                }
+
+
+                function initMoment(){
+                    moment.lang('es', {
+                        relativeTime: {
+                            future: 'dentro de  %s',
+                            past: 'hace %s',
+                            s: 'segundos',
+                            m: 'un minuto',
+                            mm: '%d minutos',
+                            h: 'una hora',
+                            hh: '%d horas',
+                            d: 'una dia',
+                            dd: '%d dias',
+                            M: 'un mes',
+                            MM: '%d meses',
+                            y: 'un año',
+                            yy: '%d años'
+                        },
+                    });
+                }
+        </script>
+
+    }

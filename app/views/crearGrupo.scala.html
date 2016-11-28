@@ -1,0 +1,52 @@
+@import controllers.routes
+@(tipo: String,listaCon:List[GroupChat],departamento: String,usuario: String,listaChat:List[User],listaUsuarios:List[User],loginForm: DynamicForm)
+@scripts = {<script>$('#selecInte').select2({placeholder:"Seleccione los integrantes",});</script>}
+    @main(tipo,usuario,departamento,listaChat: List[User],listaCon:List[GroupChat],scripts){
+    <!-- input-forms -->
+    <div class="grids">
+        <div class="panel panel-widget forms-panel" id="panel-crear-chat">
+            <div class="progressbar-heading general-heading">
+                <h4>Crear Nuevo Chat Grupal</h4>
+            </div>
+            <div class="forms">
+                <h3 class="title1"></h3>
+                <div class="form-three widget-shadow">
+                    <form class="form-horizontal" action="@routes.ChatController.crearChatNuevo()" method="post">
+                        <div class="form-group @(if(loginForm.error("namegroup") != null) "has-error" else "" )">
+                            <label for="namegroup" class="col-sm-12 control-label">Nombre del Grupo</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control1" name="namegroup" id="namegroup"  value="@(if(!loginForm.field("namegroup").equals(null)) loginForm.field("namegroup").value() else "")" placeholder="Nombre del Grupo" required>
+                                <span class="help-block">
+                                @for(error <- loginForm("namegroup").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group @(if(loginForm.error("inte[]") != null) "has-error" else "" )">
+                            <label class="col-sm-12 control-label">Integrantes</label>
+                            <div class="col-sm-6">
+                                <select multiple="multiple" id="selecInte" name="inte[]"class="form-control1">
+                                    @for(u<-listaUsuarios){
+                                        <option value="@u.getEmail">@u.getFullname</option>
+                                    }
+                                </select>
+                                <span class="help-block">
+                                @for(error <- loginForm("inte[]").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <p>
+                            <input type="submit" name="sub-1" value="Guardar" class="btn btn-primary">
+                            <input type="reset" name="res-1" id="res-1" value="Cancelar" class="btn btn-danger">
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

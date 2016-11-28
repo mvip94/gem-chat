@@ -1,0 +1,166 @@
+@(tipo: String, usuario: String, departamento: String, listaUsuarios: List[User],listaConversaciones:List[GroupChat],scripts: Html = Html(""),scriptshead:Html=Html(""))(content: Html)()
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <title>GEMCHAT</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <script type="application/x-javascript"> addEventListener("load", function () {
+            setTimeout(hideURLbar, 0);
+        }, false);
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        } </script>
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/style.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.css")">
+        <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/select2.css")">
+        @*<link href='//fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic' rel='stylesheet' type='text/css'>*@
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/font.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/font-awesome.css")">
+        <script src="@routes.Assets.at("js/jquery2.0.3.min.js")" type="text/javascript"></script>
+        <script src="@routes.Assets.at("js/modernizr.js")" type="text/javascript"></script>
+
+        <link rel="shortcut icon" type="image/png" href="@routes.Assets.at("images/logo.png")">
+        @scriptshead
+    </head>
+    @if(listaUsuarios != null) {
+        <body class="dashboard-page">
+            <div class="content_div">
+                <nav class="main-menu">
+                    <ul>
+                        <li>
+                            <a href="/">
+                                <i class="fa fa-home nav_icon"></i>
+                                <span class="nav-text">
+                                    General
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/departamento/@departamento">
+                                <i class="fa fa-sitemap nav_icon"></i>
+                                <span class="nav-text">
+                                @departamento
+                                </span>
+                            </a>
+                        </li>
+                        <li class="has-subnav">
+                            <a href="javascript:;">
+                                <i class="fa fa-inbox" aria-hidden="true"></i>
+                                <span class="nav-text">Chats</span>
+                                <i class="icon-angle-right"></i><i class="icon-angle-down"></i>
+                            </a>
+                            <ul>
+                                @for(chat <- listaConversaciones){
+                                    <li>
+                                        <a class="subnav-text" href="/chat/grupal/@chat.getId">
+                                        @chat.getName
+                                        </a>
+                                    </li>
+                                }
+                                @for(user <- listaUsuarios) {
+                                    <li>
+                                        <a class="subnav-text" href="/departamento/@user.getDepartment.getName/t/@user.getFullname()">
+                                        @user.getFullname
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                        @if(tipo.equals("1")){
+                            <li>
+                                <a href="/reportes">
+                                    <i class="fa fa-file-text-o nav_icon"></i>
+                                    <span class="nav-text">
+                                        Informes de Actividad
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                        @if(tipo.equals("2")){
+                            <li>
+                                <a href="/reportes">
+                                    <i class="fa fa-file-text-o nav_icon"></i>
+                                    <span class="nav-text">
+                                        Informes de Actividad
+                                    </span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/chat/grupal/crear">
+                                    <i class="fa fa-users nav_icon"></i>
+                                    <span class="nav-text">
+                                        Nuevo chat grupal
+                                    </span>
+                                </a>
+                            </li>
+                        }
+
+                    </ul>
+                    <ul class="logout">
+                        <li>
+                            <a href="/mi-perfil">
+                                <i class="fa fa-user nav_icon"></i>
+                                <span class="nav-text">Mi Perfil</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="@routes.LoginController.getLogout()">
+                                <i class="icon-off nav-icon"></i>
+                                <span class="nav-text">Salir</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <section class="chat_container">
+
+                    @*<div class="main-grid">*@
+                        @*<div class="agile-grids">*@
+                        @content
+                        @*</div>*@
+                    @*</div>*@
+                </section>
+            </div>
+            <script src="@routes.Assets.at("js/bootstrap.js")"></script>
+            <script src="@routes.Assets.at("js/moment.js")"></script>
+            <script src="@routes.Assets.at("js/select2.js")"></script>
+            @scripts
+            <script >
+                    $(document).ready(function () {
+                        var inFormOrLink = true;
+                        $('a').on('click', function () {
+                            inFormOrLink = false;
+                        });
+                        $('form').bind('submit', function () {
+                            inFormOrLink = false;
+                        });
+                        window.onbeforeunload = function() {
+                            if (inFormOrLink) {
+                                $.ajax({
+                                 type: "GET",
+                                 url: "/logout"
+                                 })
+                            }
+                        }
+                    });
+            </script>
+        </body>
+    } else {
+        <body class="signup-body">
+            <div class="agile-signup">
+                <div class="contenido">
+                @content
+                </div>
+                <div class="copyright">
+                    <p>© 2016 IGF115-GRUPO 1. Todos los derechos reservados.</p>
+                </div>
+
+            </div>
+            <script src="@routes.Assets.at("js/bootstrap.js")"></script>
+            <script src="@routes.Assets.at("js/moment.js")"></script>
+            <script src="@routes.Assets.at("js/select2.js")"></script>
+        </body>
+    }
+
+</html>

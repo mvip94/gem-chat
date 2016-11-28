@@ -1,0 +1,79 @@
+@import controllers.routes
+@(tipo: String,listaCon:List[GroupChat],departamento: String,usuario: String,listaChat:List[User],listaUsuarios:List[User],user:User,loginForm: DynamicForm)
+    @main(tipo,usuario,departamento,listaChat: List[User],listaCon:List[GroupChat]){
+    <!-- input-forms -->
+    <div class="grids">
+        <div class="panel panel-widget forms-panel" id="panel-crear-chat">
+            <div class="progressbar-heading general-heading">
+                <h4>Mi Perfil</h4>
+            </div>
+            <div class="forms">
+                <h3 class="title1"></h3>
+                <div class="form-three widget-shadow">
+                    <form class="form-horizontal" action="@routes.UserController.editarPerfil()" method="post">
+                        <div class="form-group @(if(loginForm.error("nombre") != null) "has-error" else "" )">
+                            <label for="nombre" class="col-sm-12 control-label">Nombre</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control1" value="@user.getName" name="nombre" id="nombre"  value="@(if(!loginForm.field("nombre").equals(null)) loginForm.field("nombre").value() else "")" placeholder="Juan" required>
+                                <span class="help-block">
+                                @for(error <- loginForm("nombre").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group @(if(loginForm.error("apellido") != null) "has-error" else "" )">
+                            <label for="apellido" class="col-sm-12 control-label">Apellidos</label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control1" value="@user.getLast" name="apellido" id="apellido"  value="@(if(!loginForm.field("apellido").equals(null)) loginForm.field("apellido").value() else "")" placeholder="Perez" required>
+                                <span class="help-block">
+                                @for(error <- loginForm("apellido").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group @(if(loginForm.error("password") != null) "has-error" else "" )">
+                            <label for="password" class="col-sm-12 control-label">Contraseña</label>
+                            <div class="col-sm-6">
+                                <input type="password" name="password" id="password_formulario" value="@(if(!loginForm.field("password").equals(null)) loginForm.field("password").value() else "")" placeholder="Ingrese contraseña actual" required>
+                                <span class="help-block">
+                                @for(error <- loginForm("password").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group @(if(loginForm.error("password_new") != null) "has-error" else "" )">
+                            <label for="password_new" class="col-sm-12 control-label">Nueva Contraseña</label>
+                            <div class="col-sm-6">
+                                <input type="password" name="password_new" id="password_new" value="@(if(!loginForm.field("password_new").equals(null)) loginForm.field("password_new").value() else "")" placeholder="Ingrese nueva contraseña">
+                                <span class="help-block">
+                                @for(error <- loginForm("password_new").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group @(if(loginForm.error("password_confirm") != null) "has-error" else "" )">
+                            <label for="password_confirm" class="col-sm-12 control-label">Confirmar Nueva Contraseña</label>
+                            <div class="col-sm-6">
+                                <input type="password" name="password_confirm" id="password_confirm" value="@(if(!loginForm.field("password_confirm").equals(null)) loginForm.field("password_confirm").value() else "")" placeholder="Confirmar nueva contraseña">
+                                <span class="help-block">
+                                @for(error <- loginForm("password_confirm").errors) {
+                                    <strong>@Messages(error.messages, error.arguments.toArray: _*)</strong>
+                                }
+                                </span>
+                            </div>
+                        </div>
+                        <hr>
+                        <p>
+                            <input type="submit" name="sub-1" value="Actualizar Datos" class="btn btn-primary">
+                            <input type="reset" name="res-1" id="res-1" value="Cancelar" class="btn btn-danger">
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

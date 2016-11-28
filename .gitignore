@@ -1,0 +1,10 @@
+/bin/
+.idea/
+.project/
+.settings/
+.classpath
+target/
+logs/
+app-2.11/
+app/assets/
+project/project/
